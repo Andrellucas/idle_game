@@ -63,28 +63,27 @@
                 </select>
             </div>
             <canvas id="marketChart"></canvas>
-<!-- Adicione este bloco após o elemento canvas no mercado -->
+            
+            <div id="marketInfo" class="market-info">
+              <div class="market-status">
+                  <p>Selecione um recurso para ver informações do mercado</p>
+              </div>
+            </div>
 
-<div id="marketInfo" class="market-info">
-  <div class="market-status">
-      <p>Selecione um recurso para ver informações do mercado</p>
-  </div>
-</div>
-
-<div class="trade-metrics">
-  <div class="metric">
-      <div class="metric-label">Oferta Global</div>
-      <div id="supplyValue" class="metric-value">-</div>
-  </div>
-  <div class="metric">
-      <div class="metric-label">Variação</div>
-      <div id="priceVariation" class="metric-value">-</div>
-  </div>
-  <div class="metric">
-      <div class="metric-label">Tendência</div>
-      <div id="marketTrend" class="metric-value">-</div>
-  </div>
-</div>
+            <div class="trade-metrics">
+              <div class="metric">
+                  <div class="metric-label">Oferta Global</div>
+                  <div id="supplyValue" class="metric-value">-</div>
+              </div>
+              <div class="metric">
+                  <div class="metric-label">Variação</div>
+                  <div id="priceVariation" class="metric-value">-</div>
+              </div>
+              <div class="metric">
+                  <div class="metric-label">Tendência</div>
+                  <div id="marketTrend" class="metric-value">-</div>
+              </div>
+            </div>
             <div class="trade-section">
                 <div class="trade-inputs">
                     <select id="resourceSelector"></select>

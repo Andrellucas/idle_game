@@ -1,314 +1,539 @@
-css
-/* ======================================
- * IDLE INDUSTRIAL GAME - CSS OTIMIZADO
- * ====================================== */
-
-:root {
-  /* Paleta de cores */
-  --color-dark: #1a1a1a;
-  --color-panel: #2c3e50;
-  --color-panel-header: #34495e;
-  --color-text: #fff;
-  --color-text-header: #ecf0f1;
-  --color-accent-success: #2ecc71;
-  --color-accent-danger: #e74c3c;
-  --color-accent-info: #3498db;
-  --color-input-bg: #34495e;
-  --color-hover-opacity: 0.9;
-  --color-item-bg: rgba(255, 255, 255, 0.05);
-  
-  /* Espaçamento */
-  --space-xs: 5px;
-  --space-sm: 8px;
-  --space-md: 10px;
-  --space-lg: 15px;
-  --space-xl: 20px;
-  
-  /* Bordas */
-  --border-radius: 5px;
-  --border-radius-lg: 8px;
-  --border-radius-xl: 10px;
+/* Estilos Globais */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Base e Tipografia */
 body {
-  background: var(--color-dark);
-  color: var(--color-text);
-  font-family: "Arial", sans-serif;
-  margin: var(--space-xl);
+  background-color: #f5f5f5;
+  color: #333;
   line-height: 1.6;
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-h1, h2 {
+h1 {
+  color: #2c3e50;
   text-align: center;
-  color: var(--color-text-header);
-  margin-top: 0;
+  margin-bottom: 30px;
+  font-size: 2.5rem;
 }
 
-/* Componentes de Interface */
+h2 {
+  color: #34495e;
+  margin-bottom: 15px;
+  font-size: 1.5rem;
+}
+
 button {
+  background-color: #3498db;
+  color: white;
   border: none;
-  border-radius: var(--border-radius);
-  padding: var(--space-md);
+  padding: 8px 15px;
+  border-radius: 4px;
   cursor: pointer;
-  font-size: 1em;
-  transition: opacity 0.3s;
+  transition: background-color 0.3s;
 }
 
 button:hover {
-  opacity: var(--color-hover-opacity);
+  background-color: #2980b9;
+}
+
+button:disabled {
+  background-color: #bdc3c7;
+  cursor: not-allowed;
+}
+
+.sell-btn {
+  background-color: #e74c3c;
+}
+
+.sell-btn:hover {
+  background-color: #c0392b;
+}
+
+.buy-btn {
+  background-color: #2ecc71;
+}
+
+.buy-btn:hover {
+  background-color: #27ae60;
 }
 
 input, select {
-  padding: var(--space-sm);
-  border: none;
-  border-radius: var(--border-radius);
-  background: var(--color-input-bg);
-  color: var(--color-text);
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  width: 100%;
 }
 
-/* Componentes de Autenticação */
+/* Seções de Login e Registro */
 .auth-section {
-  max-width: 300px;
-  margin: var(--space-xl) auto;
-  background: var(--color-panel);
-  padding: var(--space-xl);
-  border-radius: var(--border-radius-lg);
+  max-width: 400px;
+  margin: 0 auto;
+  background: white;
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.auth-section h2 {
+  text-align: center;
+  margin-bottom: 20px;
 }
 
 .auth-section input {
-  width: 100%;
-  padding: var(--space-md);
-  margin: var(--space-sm) 0;
+  margin-bottom: 15px;
 }
 
 .auth-section button {
   width: 100%;
-  padding: var(--space-md);
-  background: var(--color-accent-success);
-  color: var(--color-text);
-  margin-top: var(--space-md);
+  padding: 10px;
+  font-size: 1rem;
 }
 
 .auth-section p {
   text-align: center;
+  margin-top: 15px;
 }
 
 .auth-section a {
-  color: var(--color-accent-info);
+  color: #3498db;
   text-decoration: none;
 }
 
-.auth-section a:hover {
-  text-decoration: underline;
+.message {
+  margin-top: 15px;
+  padding: 10px;
+  border-radius: 4px;
+  text-align: center;
 }
 
-.auth-section .message {
-  color: var(--color-accent-danger);
-  margin-top: var(--space-md);
-  min-height: 1.2em;
-  text-align: center;
+.message:not(:empty) {
+  background-color: #f8d7da;
+  color: #721c24;
 }
 
 /* Layout do Jogo */
 .container {
   display: grid;
-  grid-template-columns: 300px 1fr;
-  gap: 30px;
-  max-width: 1200px;
-  margin: 0 auto;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
 }
 
 .game-header {
+  grid-column: 1 / -1;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--space-lg);
+  padding: 10px 0;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #ddd;
+}
+
+.player-info {
+  font-weight: bold;
+  font-size: 1.1rem;
 }
 
 .logout-btn {
-  background: var(--color-panel-header);
-  color: var(--color-text);
-  padding: var(--space-xs) var(--space-md);
+  background-color: #95a5a6;
+  padding: 5px 10px;
 }
 
-/* Painéis e Categorias */
-.production-panel .category,
-.market-panel {
-  background: var(--color-panel);
-  border-radius: var(--border-radius-xl);
-  margin-bottom: var(--space-lg);
-  overflow: hidden;
+.logout-btn:hover {
+  background-color: #7f8c8d;
 }
 
-.market-panel {
-  padding: var(--space-xl);
+/* Produção */
+.production-panel {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.production-panel h2 {
-  background: var(--color-panel-header);
-  padding: var(--space-md);
-  margin: 0;
+.category {
+  margin-bottom: 15px;
   cursor: pointer;
+}
+
+.category h2 {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 10px;
+  background-color: #ecf0f1;
+  border-radius: 4px;
+  margin-bottom: 5px;
 }
 
 .content {
-  padding: var(--space-md);
-  display: none;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
 }
 
 .content.visible {
-  display: block;
+  max-height: 1000px;
 }
 
-/* Itens e Recursos */
 .resource-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: var(--space-sm);
-  margin: var(--space-xs) 0;
-  background: var(--color-item-bg);
-  border-radius: var(--border-radius);
+  padding: 8px 15px;
+  border-bottom: 1px solid #eee;
 }
 
-.resource-item button {
-  padding: var(--space-xs) var(--space-sm);
+.resource-item:last-child {
+  border-bottom: none;
 }
 
-/* Mercado e Comércio */
-#marketChart {
-  background: #fff;
-  border-radius: var(--border-radius-lg);
-  margin: var(--space-lg) 0;
-  width: 100%;
+/* Mercado */
+.market-panel {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .chart-controls {
-  margin-bottom: var(--space-md);
+  margin-bottom: 15px;
+}
+
+#marketChart {
+  width: 100%;
+  height: 200px;
+  margin-bottom: 15px;
 }
 
 .trade-section {
-  display: grid;
-  gap: var(--space-md);
+  margin-top: 20px;
 }
 
 .trade-inputs {
   display: flex;
-  gap: var(--space-md);
-}
-
-.trade-inputs select, 
-.trade-inputs input {
-  flex: 1;
+  gap: 10px;
+  margin-bottom: 10px;
 }
 
 .trade-buttons {
   display: flex;
-  gap: var(--space-md);
-}
-
-.trade-buttons button {
-  flex: 1;
-}
-
-button.sell-btn {
-  background: var(--color-accent-danger);
-  color: var(--color-text);
-}
-
-button.buy-btn {
-  background: var(--color-accent-success);
-  color: var(--color-text);
+  gap: 10px;
 }
 
 .balance {
+  margin-top: 15px;
+  font-size: 1.2rem;
+  font-weight: bold;
   text-align: right;
-  margin-top: var(--space-lg);
-  font-size: 1.2em;
+}
+
+/* Informações do mercado */
+.market-info {
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  padding: 12px;
+  margin: 15px 0;
+}
+
+.market-status p {
+  margin-bottom: 8px;
+}
+
+.trade-metrics {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 15px 0;
+}
+
+.metric {
+  background-color: #e9ecef;
+  border-radius: 6px;
+  padding: 10px;
+  flex: 1;
+  text-align: center;
+}
+
+.metric-label {
+  font-size: 0.8rem;
+  color: #6c757d;
+}
+
+.metric-value {
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin-top: 5px;
+}
+
+/* Status de mercado */
+.status-alta-demanda {
+  color: #d63031;
+  font-weight: bold;
+}
+
+.status-demanda-moderada {
+  color: #e17055;
+  font-weight: bold;
+}
+
+.status-equilibrado {
+  color: #00b894;
+  font-weight: bold;
+}
+
+.status-oferta-abundante {
+  color: #0984e3;
+  font-weight: bold;
+}
+
+.status-excesso-de-oferta {
+  color: #6c5ce7;
+  font-weight: bold;
 }
 
 /* Responsividade */
-@media (max-width: 768px) {
+@media screen and (max-width: 768px) {
   .container {
     grid-template-columns: 1fr;
+  }
+  
+  .game-header {
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
   }
   
   .trade-inputs {
     flex-direction: column;
   }
 }
-/* Estilos para informações de mercado */
+
+/* Adicionar estes estilos ao final do seu arquivo style.css */
+
+/* Estilos para o painel de informações do mercado */
 .market-info {
-  background: var(--color-panel-header);
-  padding: var(--space-md);
-  border-radius: var(--border-radius);
-  margin: var(--space-md) 0 var(--space-xl) 0;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 12px;
+  margin: 10px 0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .market-status p {
-  margin: var(--space-xs) 0;
+  margin: 6px 0;
+  font-size: 0.9em;
 }
 
+/* Métricas de mercado */
+.trade-metrics {
+  display: flex;
+  justify-content: space-between;
+  margin: 15px 0;
+}
+
+.metric {
+  flex: 1;
+  text-align: center;
+  padding: 10px;
+  background-color: #fff;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  margin: 0 5px;
+}
+
+.metric-label {
+  font-size: 0.8em;
+  color: #666;
+  margin-bottom: 5px;
+}
+
+.metric-value {
+  font-weight: bold;
+  font-size: 1.1em;
+}
+
+/* Classes para variações de preço e tendências */
+.up {
+  color: #28a745;
+}
+
+.down {
+  color: #dc3545;
+}
+
+.neutral {
+  color: #6c757d;
+}
+
+/* Status do mercado */
 .status-alta-demanda {
-  color: var(--color-accent-danger);
+  color: #d63384;
   font-weight: bold;
 }
 
 .status-demanda-moderada {
-  color: #f39c12;
+  color: #fd7e14;
+}
+
+.status-equilibrado {
+  color: #20c997;
+}
+
+.status-oferta-abundante {
+  color: #0dcaf0;
+}
+
+.status-excesso-de-oferta {
+  color: #0d6efd;
+  font-weight: bold;
+}
+
+/* Melhoria nos controles de comércio */
+.trade-inputs {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.trade-inputs select, 
+.trade-inputs input {
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ced4da;
+}
+
+.trade-inputs select {
+  flex: 2;
+  margin-right: 8px;
+}
+
+.trade-inputs input {
+  flex: 1;
+  text-align: center;
+}
+
+.trade-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.buy-btn, .sell-btn {
+  flex: 1;
+  padding: 8px 0;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.buy-btn {
+  background-color: #28a745;
+}
+
+.buy-btn:hover {
+  background-color: #218838;
+}
+
+.sell-btn {
+  background-color: #dc3545;
+}
+
+.sell-btn:hover {
+  background-color: #c82333;
+}
+
+/* Estilos para métricas de mercado */
+.trade-metrics {
+  display: flex;
+  justify-content: space-between;
+  margin: 20px 0;
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.metric {
+  flex: 1;
+  text-align: center;
+  padding: 10px;
+  border-right: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.metric:last-child {
+  border-right: none;
+}
+
+.metric-label {
+  font-size: 0.85rem;
+  color: #555;
+  margin-bottom: 5px;
+}
+
+.metric-value {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.metric-value.up {
+  color: #27ae60;
+}
+
+.metric-value.down {
+  color: #e74c3c;
+}
+
+.metric-value.neutral {
+  color: #3498db;
+}
+
+.market-info {
+  margin: 15px 0;
+  padding: 15px;
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+}
+
+.market-status p {
+  margin: 8px 0;
+}
+
+.status-alta-demanda {
+  color: #c0392b;
+  font-weight: bold;
+}
+
+.status-demanda-moderada {
+  color: #e67e22;
   font-weight: bold;
 }
 
 .status-equilibrado {
-  color: var(--color-accent-info);
+  color: #27ae60;
+  font-weight: bold;
 }
 
 .status-oferta-abundante {
-  color: #27ae60;
+  color: #3498db;
+  font-weight: bold;
 }
 
 .status-excesso-de-oferta {
-  color: var(--color-accent-success);
+  color: #9b59b6;
   font-weight: bold;
 }
 
-/* Adicione ao .market-panel para incluir informações de oferta */
-.market-panel .trade-metrics {
-  display: flex;
-  justify-content: space-between;
-  margin-top: var(--space-lg);
-  background: rgba(0, 0, 0, 0.1);
-  padding: var(--space-md);
-  border-radius: var(--border-radius);
-}
-
-.market-panel .metric {
-  text-align: center;
-}
-
-.market-panel .metric-value {
-  font-size: 1.2em;
-  font-weight: bold;
-}
-
-/* Adicionar estilo para indicadores de tendência */
-.trend-indicator {
-  display: inline-block;
-  margin-left: var(--space-xs);
-}
-
-.trend-up {
-  color: var(--color-accent-danger);
-}
-
-.trend-down {
-  color: var(--color-accent-success);
-}
-
-.trend-stable {
-  color: var(--color-accent-info);
+/* Ajustes para o gráfico */
+#marketChart {
+  width: 100% !important;
+  height: 200px !important;
+  margin: 10px 0;
 }

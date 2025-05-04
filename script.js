@@ -79,6 +79,7 @@ let gameState = {
   factories: {},
   prices: {},
   history: {},
+  globalSupply: {}, // Adicionado para armazenar a oferta global de cada recurso
   categories: { primary: true, secondary: true, factories: true },
   player: {
     balance: CONFIG.player.balance,
@@ -299,6 +300,8 @@ async function sellResource() {
     
     if (result.success) {
       await loadGame(); // Recarregar dados
+      await updatePrices();
+      updateMarketSelectors(); // Atualizar preços e oferta global
       updateUI();
     } else {
       alert(result.message || 'Erro ao vender recurso');
@@ -325,6 +328,8 @@ async function buyResource() {
     
     if (result.success) {
       await loadGame();
+      await updatePrices();
+      updateMarketSelectors(); // Atualizar preços e oferta global
       updateUI();
     } else {
       alert(result.message || 'Erro ao comprar recurso');
@@ -334,38 +339,59 @@ async function buyResource() {
   }
 }
 
-// Atualiza preços do mercado global
+// Atualiza preços do mercado global e dados de oferta
 async function updatePrices() {
   try {
     const response = await fetch('global_market.php');
-    
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-    
+    if (!response.ok) throw new Error(`Erro HTTP! Status: ${response.status}`);
     const marketData = await response.json();
-    
-    if (Array.isArray(marketData)) {
-      marketData.forEach(item => {
-        const price = parseFloat(item.preco_medio) || 0;
-        gameState.prices[item.recurso] = price.toFixed(2);
-        
-        // Adiciona ao histórico para gráficos
-        if (!gameState.history[item.recurso]) {
-          gameState.history[item.recurso] = [];
-        }
-        
-        if (gameState.history[item.recurso].length > 30) {
-          gameState.history[item.recurso].shift();
-        }
-        
-        gameState.history[item.recurso].push(price);
-      });
-      
-      updateChart();
+
+    if (!Array.isArray(marketData)) {
+      console.error('Dados de mercado retornaram em formato inesperado:', marketData);
+      return;
     }
+
+    marketData.forEach(item => {
+      const { recurso, preco_medio, quantidade_total } = item;
+      if (!recurso) return;
+      const price = parseFloat(preco_medio) || 0;
+      gameState.prices[recurso] = price.toFixed(5);
+      gameState.globalSupply[recurso] = parseInt(quantidade_total) || 0;
+
+      gameState.history[recurso] = gameState.history[recurso] || [];
+      if (gameState.history[recurso].length >= 50000) {
+        gameState.history[recurso].shift();
+      }
+      gameState.history[recurso].push(price);
+    });
+
+    updateMarketSelectors();
+    updateChart();
+    updateMarketInfo();
+
   } catch (error) {
-    console.error('Erro ao buscar preços:', error);
+    console.error('Erro ao atualizar preços globais:', error);
+  }
+}
+
+// Função auxiliar para atualizar os seletores de mercado
+function updateMarketSelectors() {
+  // Certifique-se de que todos os recursos têm uma entrada no objeto de preços
+  Object.keys(CONFIG.resources).forEach(resource => {
+    if (gameState.prices[resource] === undefined) {
+      gameState.prices[resource] = CONFIG.resources[resource].basePrice.toFixed(2);
+    }
+  });
+  
+  // Atualizar o conteúdo do seletor de recurso no painel de comércio
+  const resourceSelector = document.getElementById("resourceSelector");
+  const currentValue = resourceSelector.value;
+  
+  // Preservar seleção atual ao atualizar
+  if (!currentValue && resourceSelector.options.length === 0) {
+    resourceSelector.innerHTML = Object.keys(CONFIG.resources)
+      .map(res => `<option value="${res}">${res} (${gameState.prices[res]})</option>`)
+      .join('');
   }
 }
 
@@ -483,50 +509,72 @@ function updateMarketInfo() {
   const selected = document.getElementById("chartSelector").value;
   if (!selected) return;
   
-  // Exibe informações adicionais sobre oferta e demanda
-  const infoContainer = document.getElementById('marketInfo');
-  if (!infoContainer) {
-    // Criar contêiner de informações se não existir
-    const container = document.createElement('div');
-    container.id = 'marketInfo';
-    container.className = 'market-info';
-    
-    // Inserir após o gráfico
-    const chartElement = document.getElementById('marketChart');
-    chartElement.parentNode.insertBefore(container, chartElement.nextSibling);
-  }
-  
-  // Atualiza as informações
+  // Atualizar dados nos elementos de métricas
   if (selected && gameState.prices[selected]) {
     const price = parseFloat(gameState.prices[selected]);
     const basePrice = CONFIG.resources[selected].basePrice;
     const ratio = price / basePrice;
     
+    // Determinar status do mercado e tendência
     let marketStatus = "equilibrado";
     let trend = "estável";
+    let trendClass = "neutral";
     
     if (ratio > 1.5) {
       marketStatus = "alta demanda";
-      trend = "tendência de alta";
+      trend = "↗️ alta";
+      trendClass = "up";
     } else if (ratio > 1.1) {
       marketStatus = "demanda moderada";
-      trend = "tendência de alta";
+      trend = "↗️ alta leve";
+      trendClass = "up";
     } else if (ratio < 0.7) {
       marketStatus = "excesso de oferta";
-      trend = "tendência de baixa";
+      trend = "↘️ baixa";
+      trendClass = "down";
     } else if (ratio < 0.9) {
       marketStatus = "oferta abundante";
-      trend = "tendência de baixa";
+      trend = "↘️ baixa leve";
+      trendClass = "down";
     }
     
+    // Buscar dados do histórico para calcular variação
+    const history = gameState.history[selected];
+    let variation = "0%";
+    let variationClass = "neutral";
+    
+    if (history && history.length >= 2) {
+      const oldPrice = history[history.length - 2] || history[history.length - 1];
+      const currentPrice = history[history.length - 1];
+      const percentChange = ((currentPrice - oldPrice) / oldPrice) * 100;
+      
+      if (percentChange > 0) {
+        variation = `+${percentChange.toFixed(1)}%`;
+        variationClass = "up";
+      } else if (percentChange < 0) {
+        variation = `${percentChange.toFixed(1)}%`;
+        variationClass = "down";
+      } else {
+        variation = "0%";
+      }
+    }
+    
+    // Atualizar os elementos na interface
     document.getElementById('marketInfo').innerHTML = `
       <div class="market-status">
         <p><strong>Recurso:</strong> ${selected}</p>
-        <p><strong>Preço Atual:</strong> ${price.toFixed(2)} (${ratio > 1 ? '+' : ''}${((ratio - 1) * 100).toFixed(1)}% do valor base)</p>
+        <p><strong>Preço Atual:</strong> ${price.toFixed(5)} (${ratio > 1 ? '+' : ''}${((ratio - 1) * 100).toFixed(1)}% do valor base)</p>
         <p><strong>Status do Mercado:</strong> <span class="status-${marketStatus.replace(/\s+/g, '-')}">${marketStatus}</span></p>
-        <p><strong>Tendência:</strong> ${trend}</p>
       </div>
     `;
+    
+    // Atualizar métricas específicas
+    // Agora exibe a oferta global do recurso em vez da quantidade do jogador
+    document.getElementById('supplyValue').textContent = gameState.globalSupply[selected]?.toFixed(0) || '0';
+    document.getElementById('priceVariation').textContent = variation;
+    document.getElementById('priceVariation').className = `metric-value ${variationClass}`;
+    document.getElementById('marketTrend').textContent = trend;
+    document.getElementById('marketTrend').className = `metric-value ${trendClass}`;
   }
 }
 
@@ -534,40 +582,47 @@ function updateMarketInfo() {
 // Atualiza gráfico de preço de recursos
 function updateChart() {
   const selected = document.getElementById("chartSelector").value;
-  if (!selected) return;
-  
+  if (!selected || !gameState.history[selected]?.length) return;
+
   const ctx = document.getElementById('marketChart').getContext('2d');
-  
-  // Destrói gráfico existente se houver
-  if (window.chart) {
-    window.chart.destroy();
-  }
-  
-  if (selected && gameState.history[selected] && gameState.history[selected].length > 0) {
-    window.chart = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: gameState.history[selected].map((_, i) => i),
-        datasets: [{
-          label: `Preço de ${selected}`,
-          data: gameState.history[selected],
-          borderColor: 'rgba(46, 204, 113, 1.0)',
-          backgroundColor: 'rgba(46, 204, 113, 0.3)',
-          fill: true
-        }]
+  if (window.chart) window.chart.destroy();
+
+  const gradient = ctx.createLinearGradient(0, 0, 0, ctx.canvas.height);
+  gradient.addColorStop(0, 'rgba(46, 204, 113, 0.4)');
+  gradient.addColorStop(1, 'rgba(46, 204, 113, 0.05)');
+
+  window.chart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: gameState.history[selected].map((_, i) => i),
+      datasets: [{
+        label: `Preço de ${selected}`,
+        data: gameState.history[selected],
+        borderColor: '#2ecc71',
+        backgroundColor: gradient,
+        fill: true,
+        tension: 0.4,
+        borderWidth: 2,
+        pointRadius: 3,
+        pointBackgroundColor: '#27ae60'
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom', labels: { boxWidth: 12, padding: 20 } },
+        tooltip: { mode: 'index', intersect: false, padding: 8 }
       },
-      options: {
-        responsive: true,
-        scales: {
-          x: { display: true, title: { display: true, text: 'Tempo' } },
-          y: { display: true, title: { display: true, text: 'Preço' } }
-        }
+      interaction: { mode: 'nearest', axis: 'x', intersect: false },
+      scales: {
+        x: { display: true, title: { display: true, text: 'Intervalos' } },
+        y: { display: true, title: { display: true, text: 'Preço (moeda)' } }
       }
-    });
-    
-    // Atualiza informações adicionais
-    updateMarketInfo();
-  }
+    }
+  });
+
+  updateMarketInfo();
 }
 
 // Função inicial para configurar o jogo após login
@@ -601,12 +656,18 @@ async function initGame() {
   
   // Busca preços iniciais
   await updatePrices();
+  updateMarketSelectors();
 
   // Loop principal do jogo: produção, preços, UI e salvar
-  setInterval(() => {
-    updateProduction();
-    updatePrices();
-    updateUI();
-    saveGame();
+  setInterval(async () => {
+    try {
+      updateProduction();
+      await updatePrices();
+      updateMarketSelectors();
+      updateUI();
+      await saveGame();
+    } catch (err) {
+      console.error('Erro no loop principal:', err);
+    }
   }, 1000);
 }
