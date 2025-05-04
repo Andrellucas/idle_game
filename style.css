@@ -537,3 +537,80 @@ input, select {
   height: 200px !important;
   margin: 10px 0;
 }
+
+/* Novas variáveis de cores */
+:root {
+  --primary-color: #2c3e50;
+  --success-color: #28a745;
+  --danger-color: #dc3545;
+  --warning-color: #ffc107;
+  --info-color: #17a2b8;
+}
+
+/* Notificações */
+.notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 15px 25px;
+  border-radius: 5px;
+  color: white;
+  z-index: 1000;
+  animation: slideIn 0.3s ease-out;
+}
+
+.notification.success { background: var(--success-color); }
+.notification.error { background: var(--danger-color); }
+.notification.warning { background: var(--warning-color); }
+.notification.info { background: var(--info-color); }
+
+@keyframes slideIn {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+/* Melhoria na responsividade */
+@media (max-width: 768px) {
+  .container {
+      grid-template-columns: 1fr;
+      padding: 10px;
+  }
+  
+  .resource-item {
+      flex-direction: column;
+      align-items: flex-start;
+  }
+  
+  .trade-buttons {
+      flex-direction: column;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .container {
+    grid-template-columns: 1fr;
+  }
+
+  .trade-metrics {
+    flex-direction: column;
+  }
+
+  .metric {
+    margin: 8px 0;
+    border-right: none;
+  }
+
+  .trade-inputs {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  #marketChart {
+    height: 250px !important;
+  }
+
+  .resource-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

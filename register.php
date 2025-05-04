@@ -32,10 +32,10 @@ try {
     
     // Inicializa recursos padrão
     $resources = ['Madeira', 'Pedra', 'Ferro', 'Trigo', 'Ouro', 'Tábuas', 'Carvão', 'Tijolos', 'BarraFerro'];
-    foreach ($resources as $resource) {
-        $stmt = $pdo->prepare("INSERT INTO player_resources (player_id, resource_name, quantity) VALUES (?, ?, 0)");
-        $stmt->execute([$playerId, $resource]);
-    }
+    foreach ($resources as $resource => $quantity) {
+        $stmt = $pdo->prepare("INSERT INTO player_resources (player_id, resource_name, quantity) VALUES (?, ?, ?)");
+        $stmt->execute([$playerId, $resource, $quantity]);
+      }
     
     // Inicializa a primeira fábrica padrão (Madeireira)
     $stmt = $pdo->prepare("INSERT INTO player_factories (player_id, factory_name, quantity) VALUES (?, 'Madeireira', 1)");
