@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Idle Industrial</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <h1>Idle Industrial 🏭</h1>
+
+    <!-- Seção de Login -->
+    <div id="login-section" class="auth-section">
+        <h2>Entrar</h2>
+        <input type="text" id="loginUsername" placeholder="Usuário">
+        <input type="password" id="loginPassword" placeholder="Senha">
+        <button onclick="login()">Entrar</button>
+        <p>Não tem conta? <a href="#" onclick="showRegister()">Cadastre-se</a></p>
+        <div id="loginMessage" class="message"></div>
+    </div>
+
+    <!-- Seção de Registro -->
+    <div id="register-section" class="auth-section" style="display:none;">
+        <h2>Cadastre-se</h2>
+        <input type="text" id="registerUsername" placeholder="Usuário">
+        <input type="password" id="registerPassword" placeholder="Senha">
+        <button onclick="registerUser()">Registrar</button>
+        <p>Já tem conta? <a href="#" onclick="showLogin()">Entre</a></p>
+        <div id="registerMessage" class="message"></div>
+    </div>
+
+    <!-- Seção do Jogo -->
+    <div id="game-section" class="container" style="display:none;">
+        <div class="game-header">
+            <span class="player-info">Jogador: <span id="playerName"></span></span>
+            <button class="logout-btn" onclick="logout()">Sair</button>
+        </div>
+
+        <!-- Painel de Produção -->
+        <div class="production-panel">
+            <div class="category" onclick="toggleCategory('primary')">
+                <h2>⛏️ Primários <span class="arrow">▶</span></h2>
+                <div id="primaryContent" class="content"></div>
+            </div>
+
+            <div class="category" onclick="toggleCategory('secondary')">
+                <h2>🏭 Secundários <span class="arrow">▶</span></h2>
+                <div id="secondaryContent" class="content"></div>
+            </div>
+
+            <div class="category" onclick="toggleCategory('factories')">
+                <h2>🏗️ Fábricas <span class="arrow">▶</span></h2>
+                <div id="factoriesContent" class="content"></div>
+            </div>
+        </div>
+
+        <!-- Painel do Mercado -->
+        <div class="market-panel">
+            <h2>📊 Mercado</h2>
+            <div class="chart-controls">
+                <select id="chartSelector" onchange="updateChart()">
+                    <option value="">-- Selecione Recurso --</option>
+                </select>
+            </div>
+            <canvas id="marketChart"></canvas>
+<!-- Adicione este bloco após o elemento canvas no mercado -->
+
+<div id="marketInfo" class="market-info">
+  <div class="market-status">
+      <p>Selecione um recurso para ver informações do mercado</p>
+  </div>
+</div>
+
+<div class="trade-metrics">
+  <div class="metric">
+      <div class="metric-label">Oferta Global</div>
+      <div id="supplyValue" class="metric-value">-</div>
+  </div>
+  <div class="metric">
+      <div class="metric-label">Variação</div>
+      <div id="priceVariation" class="metric-value">-</div>
+  </div>
+  <div class="metric">
+      <div class="metric-label">Tendência</div>
+      <div id="marketTrend" class="metric-value">-</div>
+  </div>
+</div>
+            <div class="trade-section">
+                <div class="trade-inputs">
+                    <select id="resourceSelector"></select>
+                    <input type="number" id="tradeAmount" value="10" min="1">
+                </div>
+                <div class="trade-buttons">
+                    <button class="sell-btn" onclick="sellResource()">Vender</button>
+                    <button class="buy-btn" onclick="buyResource()">Comprar</button>
+                </div>
+            </div>
+            <div class="balance">💰 Saldo: <span id="balanceValue">0</span></div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="./script.js"></script>
+</body>
+</html>
